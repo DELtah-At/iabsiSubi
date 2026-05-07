@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="RAFAEL — um editor de vídeo iniciante, dedicado e transparente. Serviços de edição para redes sociais, cortes simples e organização de material.">
+    <title>RAFAEL — um editor</title>
+    <style>
+        /* === VARIÁVEIS EDITÁVEIS === */
+        :root {
+            /* Cores */
+            --bg-dark: #0a0a0a;
+            --bg-card: #111111;
+            --purple-dark: #3a1257;
+            --purple-medium: #4a1a6b;
+            --purple-light: #6b2d9a;
+            --text-primary: #ffffff;
+            --text-secondary: #888888;
+            --border-light: rgba(255, 255, 255, 0.06);
+
+            /* Tipografia */
+            --font-main: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+            --font-weight-light: 300;
+            --font-weight-regular: 400;
+            --font-weight-medium: 500;
+
+            /* Espaçamentos */
+            --spacing-xl: 100px;
+            --spacing-lg: 80px;
+            --spacing-md: 60px;
+            --spacing-sm: 40px;
+            --spacing-xs: 24px;
+
+            /* Bordas e transições */
+            --border-radius: 8px;
+            --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --shadow-subtle: 0 2px 8px rgba(0, 0, 0, 0.2);
+            --shadow-hover: 0 4px 16px rgba(74, 26, 107, 0.3);
+        }
+
+        /* === RESET === */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        /* === BASE === */
+        body {
+            font-family: var(--font-main);
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .container { max-width: 900px; margin: 0 auto; padding: 0 var(--spacing-xs); }
+
+        /* === HERO === */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: var(--spacing-lg) var(--spacing-xs);
+            position: relative;
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 400px; height: 400px;
+            background: radial-gradient(circle, rgba(74, 26, 107, 0.1) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .hero-content { position: relative; z-index: 1; }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 8vw, 5rem);
+            font-weight: var(--font-weight-light);
+            letter-spacing: 0.05em;
+            margin-bottom: 16px;
+            opacity: 0;
+            animation: fadeUp 1s ease forwards;
+        }
+
+        .hero h1 span { color: var(--purple-light); }
+
+        .hero .tagline {
+            font-size: clamp(1rem, 3vw, 1.25rem);
+            color: var(--text-secondary);
+            font-weight: var(--font-weight-light);
+            letter-spacing: 0.02em;
+            max-width: 500px;
+            margin: 0 auto;
+            opacity: 0;
+            animation: fadeUp 1s ease 0.3s forwards;
+        }
+
+        /* === SEÇÕES GERAIS === */
+        section { padding: var(--spacing-lg) 0; border-top: 1px solid var(--border-light); }
+
+        .section-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            color: var(--purple-light);
+            margin-bottom: var(--spacing-xs);
+        }
+
+        h2 {
+            font-size: clamp(1.5rem, 4vw, 2.5rem);
+            font-weight: var(--font-weight-light);
+            margin-bottom: var(--spacing-sm);
+            letter-spacing: 0.02em;
+        }
+
+        p { color: var(--text-secondary); font-size: 1.05rem; line-height: 1.8; max-width: 600px; }
+
+        /* === SOBRE === */
+        .about-text { font-size: 1.1rem; margin-bottom: 16px; }
+
+        /* === SERVIÇOS === */
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: var(--spacing-sm);
+            margin-top: var(--spacing-sm);
+        }
+
+        .service-item {
+            padding: var(--spacing-sm);
+            background: var(--bg-card);
+            border-radius: var(--border-radius);
+            border: 1px solid var(--border-light);
+            box-shadow: var(--shadow-subtle);
+            transition: border-color var(--transition), transform var(--transition), box-shadow var(--transition);
+        }
+
+        .service-item:hover {
+            border-color: var(--purple-dark);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .service-item h3 {
+            font-size: 1.2rem;
+            font-weight: var(--font-weight-regular);
+            margin-bottom: 12px;
+            color: var(--text-primary);
+        }
+
+        .service-item p { font-size: 0.95rem; margin: 0; }
+
+        /* === PROCESSO === */
+        .process-steps { display: grid; gap: var(--spacing-sm); margin-top: var(--spacing-sm); }
+
+        .step { display: flex; gap: 20px; align-items: flex-start; }
+
+        .step-number {
+            font-size: 0.85rem;
+            color: var(--purple-light);
+            font-weight: var(--font-weight-medium);
+            min-width: 40px;
+            padding-top: 2px;
+        }
+
+        .step-content h3 { font-size: 1.1rem; font-weight: var(--font-weight-regular); margin-bottom: 8px; }
+        .step-content p { font-size: 0.95rem; margin: 0; }
+
+        /* === CTA === */
+        .cta { text-align: center; padding: var(--spacing-xl) var(--spacing-xs); }
+
+        .cta h2 { margin-bottom: 16px; }
+        .cta p { margin: 0 auto var(--spacing-sm); }
+
+        .whatsapp-btn {
+            display: inline-block;
+            padding: 16px 48px;
+            background: var(--purple-medium);
+            color: var(--text-primary);
+            text-decoration: none;
+            border-radius: var(--border-radius);
+            font-size: 1.05rem;
+            font-weight: var(--font-weight-regular);
+            letter-spacing: 0.05em;
+            transition: background var(--transition), transform var(--transition), box-shadow var(--transition);
+            box-shadow: var(--shadow-subtle);
+        }
+
+        .whatsapp-btn:hover {
+            background: var(--purple-light);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        /* === RODAPÉ === */
+        footer {
+            padding: var(--spacing-sm) 0;
+            text-align: center;
+            border-top: 1px solid var(--border-light);
+        }
+
+        footer p { font-size: 0.85rem; color: var(--text-secondary); margin: 0 auto; }
+
+        /* === ANIMAÇÕES === */
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.8s var(--transition), transform 0.8s var(--transition);
+        }
+
+        .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+        /* === RESPONSIVIDADE === */
+        @media (max-width: 768px) {
+            :root {
+                --spacing-xl: 80px;
+                --spacing-lg: 60px;
+                --spacing-md: 40px;
+            }
+            .service-item { padding: var(--spacing-xs); }
+        }
+
+        @media (max-width: 480px) {
+            .hero h1 { font-size: 2.2rem; }
+            .whatsapp-btn { padding: 14px 36px; font-size: 1rem; }
+        }
+
+        @media (max-width: 360px) {
+            .hero h1 { font-size: 2rem; }
+        }
+
+        /* === NOVOS ESTILOS === */
+        .availability-badge {
+            position: fixed;
+            top: 16px;
+            right: 16px;
+            background: var(--purple-medium);
+            color: var(--text-primary);
+            padding: 6px 12px;
+            border-radius: var(--border-radius);
+            font-size: 0.8rem;
+            z-index: 100;
+            box-shadow: var(--shadow-subtle);
+            letter-spacing: 0.05em;
+        }
+
+        .free-badge {
+            display: inline-block;
+            background: var(--purple-light);
+            color: var(--text-primary);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            margin-top: 12px;
+            font-weight: var(--font-weight-medium);
+            letter-spacing: 0.05em;
+        }
+
+        .pricing-note {
+            margin-top: var(--spacing-sm);
+            padding: 16px;
+            background: var(--bg-card);
+            border-radius: var(--border-radius);
+            border: 1px solid var(--border-light);
+        }
+
+        .pricing-note p {
+            font-size: 0.95rem;
+            margin: 0;
+            color: var(--text-secondary);
+        }
+
+        .diferenciais {
+            padding: var(--spacing-lg) 0;
+            border-top: 1px solid var(--border-light);
+        }
+
+        .diferenciais-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--spacing-sm);
+            margin-top: var(--spacing-sm);
+        }
+
+        .diferencial-item {
+            padding: var(--spacing-xs);
+            border: 1px solid var(--border-light);
+            border-radius: var(--border-radius);
+        }
+
+        .diferencial-item h3 {
+            font-size: 1rem;
+            font-weight: var(--font-weight-regular);
+            margin-bottom: 8px;
+            color: var(--purple-light);
+        }
+
+        .diferencial-item p {
+            font-size: 0.9rem;
+            margin: 0;
+        }
+
+        .guarantee-badge {
+            display: inline-block;
+            background: transparent;
+            color: var(--purple-light);
+            border: 1px solid var(--purple-dark);
+            padding: 8px 16px;
+            border-radius: var(--border-radius);
+            font-size: 0.9rem;
+            margin-bottom: var(--spacing-sm);
+            font-weight: var(--font-weight-medium);
+        }
+
+        .floating-whatsapp {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: var(--purple-medium);
+            color: var(--text-primary);
+            padding: 12px 24px;
+            border-radius: 30px;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: var(--shadow-hover);
+            z-index: 100;
+            transition: background var(--transition), transform var(--transition);
+        }
+
+        .floating-whatsapp:hover {
+            background: var(--purple-light);
+            transform: translateY(-2px);
+        }
+
+        .floating-whatsapp .free-badge {
+            margin: 0;
+            font-size: 0.75rem;
+            padding: 2px 8px;
+        }
+
+        @media (max-width: 768px) {
+            .availability-badge {
+                top: 8px;
+                right: 8px;
+                font-size: 0.7rem;
+                padding: 4px 8px;
+            }
+            .floating-whatsapp {
+                bottom: 16px;
+                right: 16px;
+                padding: 10px 20px;
+                font-size: 0.95rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- EDITÁVEL: Indicador de disponibilidade -->
+    <div class="availability-badge">3 vagas abertas esta semana</div>
+
+    <!-- EDITÁVEL: Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <!-- EDITÁVEL: Nome da marca -->
+            <h1>RAFAEL<br><span>— um editor</span></h1>
+            <!-- EDITÁVEL: Subtítulo -->
+            <p class="tagline">Começando minha trajetória na edição de vídeo, um corte de cada vez</p>
+            <!-- EDITÁVEL: Badge primeiro projeto grátis -->
+            <span class="free-badge">Primeiro projeto grátis</span>
+        </div>
+    </section>
+
+    <!-- EDITÁVEL: Sobre Section -->
+    <section class="about">
+        <div class="container">
+            <div class="fade-in">
+                <p class="section-label">Sobre</p>
+                <h2>Em construção</h2>
+                <!-- EDITÁVEL: Texto sobre -->
+                <p class="about-text">Me chamo Rafael. Estou no início da minha trajetória como editor de vídeo: estudo, pratico e busco evoluir a cada projeto.</p>
+                <p class="about-text">Não acumulo anos de experiência ou clientes de grande porte. O que ofereço é dedicação, vontade de aprender e o compromisso de entregar um trabalho honesto e bem feito.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- EDITÁVEL: Serviços Section -->
+    <section class="services">
+        <div class="container">
+            <div class="fade-in">
+                <p class="section-label">O que eu faço</p>
+                <h2>Planos personalizados</h2>
+                <div class="services-grid">
+                    <!-- EDITÁVEL: Serviço 1 -->
+                    <div class="service-item">
+                        <h3>Edição para redes sociais</h3>
+                        <p>Reels, TikToks e Shorts com cortes limpos, ritmo adequado e identidade visual simples.</p>
+                    </div>
+                    <!-- EDITÁVEL: Serviço 2 -->
+                    <div class="service-item">
+                        <h3>Montagem de vídeos pessoais</h3>
+                        <p>Vídeos de eventos, viagens ou projetos pessoais organizados de forma clara e objetiva.</p>
+                    </div>
+                    <!-- EDITÁVEL: Serviço 3 -->
+                    <div class="service-item">
+                         <h3>Ajustes e tratamento básico</h3>
+                         <p>Corte de trechos, ajuste de áudio, legendas simples e organização de material bruto.</p>
+                     </div>
+                 </div>
+                 <!-- EDITÁVEL: Nota de preços personalizados -->
+                 <div class="pricing-note">
+                     <p>Seu plano é personalizado — preços calculados automaticamente via métricas (duração, complexidade, prazo) para ser 100% justo. Sem planos fixos, sem custos ocultos.</p>
+                 </div>
+             </div>
+         </div>
+     </section>
+
+    <!-- EDITÁVEL: Diferenciais Section -->
+    <section class="diferenciais">
+        <div class="container">
+            <div class="fade-in">
+                <p class="section-label">Por que escolher</p>
+                <h2>Diferenciais</h2>
+                <div class="diferenciais-grid">
+                    <!-- EDITÁVEL: Diferencial 1 -->
+                    <div class="diferencial-item">
+                        <h3>Dedicado</h3>
+                        <p>Cada projeto recebe foco total, mesmo sendo iniciante.</p>
+                    </div>
+                    <!-- EDITÁVEL: Diferencial 2 -->
+                    <div class="diferencial-item">
+                        <h3>Preços justos</h3>
+                        <p>Cálculo automatizado por métricas, sem margem arbitrária.</p>
+                    </div>
+                    <!-- EDITÁVEL: Diferencial 3 -->
+                    <div class="diferencial-item">
+                        <h3>Sem risco</h3>
+                        <p>Primeiro projeto grátis + devolução total se não gostar.</p>
+                    </div>
+                    <!-- EDITÁVEL: Diferencial 4 -->
+                    <div class="diferencial-item">
+                        <h3>Freelance disponível</h3>
+                        <p>Flexibilidade total de prazos e demandas.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- EDITÁVEL: Processo Section -->
+    <section class="process">
+        <div class="container">
+            <div class="fade-in">
+                <p class="section-label">Como trabalho</p>
+                <h2>Processo simples e transparente</h2>
+                <div class="process-steps">
+                    <!-- EDITÁVEL: Passo 0 (Projeto grátis) -->
+                    <div class="step">
+                        <span class="step-number">00</span>
+                        <div class="step-content">
+                            <h3>Projeto grátis sem compromisso</h3>
+                            <p>Primeiro projeto é por minha conta — você testa meu trabalho sem pagar nada.</p>
+                        </div>
+                    </div>
+                    <!-- EDITÁVEL: Passo 1 -->
+                    <div class="step">
+                        <span class="step-number">01</span>
+                        <div class="step-content">
+                            <h3>Conversamos</h3>
+                            <p>Batemos um papo para alinhar o que você precisa, o estilo desejado e os prazos.</p>
+                        </div>
+                    </div>
+                    <!-- EDITÁVEL: Passo 2 -->
+                    <div class="step">
+                        <span class="step-number">02</span>
+                        <div class="step-content">
+                            <h3>Analiso o material</h3>
+                            <p>Recebo os arquivos, avalio a complexidade e confirmo se consigo entregar da melhor forma.</p>
+                        </div>
+                    </div>
+                    <!-- EDITÁVEL: Passo 3 -->
+                    <div class="step">
+                        <span class="step-number">03</span>
+                        <div class="step-content">
+                            <h3>Edito com foco</h3>
+                            <p>Trabalho na edição priorizando clareza, fluidez e tudo o que combinamos.</p>
+                        </div>
+                    </div>
+                    <!-- EDITÁVEL: Passo 4 -->
+                    <div class="step">
+                        <span class="step-number">04</span>
+                        <div class="step-content">
+                            <h3>Entrego e ajusto</h3>
+                            <p>Envio o resultado final, recebo seu feedback e faço ajustes dentro do acordo.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- EDITÁVEL: CTA Section -->
+    <section class="cta">
+        <div class="container fade-in">
+            <h2>Vamos conversar?</h2>
+            <p>Primeiro projeto grátis, preço justo calculado automaticamente, e garantia de devolução total. Sem riscos para você.</p>
+            <!-- EDITÁVEL: Badge de garantia -->
+            <div class="guarantee-badge">Devolvo 100% se não gostar</div>
+            <!-- EDITÁVEL: Botão WhatsApp -->
+            <a href="https://wa.me/5518996638775" class="whatsapp-btn" target="_blank" rel="noopener noreferrer">Falar no WhatsApp (Primeiro projeto grátis)</a>
+        </div>
+    </section>
+
+    <!-- EDITÁVEL: Rodapé -->
+    <footer>
+        <div class="container">
+            <p>RAFAEL — um editor © 2026</p>
+        </div>
+    </footer>
+
+    <script>
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.2 });
+
+        document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+    </script>
+
+    <!-- EDITÁVEL: Botão WhatsApp flutuante -->
+    <a href="https://wa.me/5518996638775" class="floating-whatsapp" target="_blank" rel="noopener noreferrer">
+        <span>WhatsApp</span>
+        <span class="free-badge">Grátis</span>
+    </a>
+</body>
+</html>
